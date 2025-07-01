@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import { Anton, Montserrat, Chango } from "next/font/google"
+import { TrackingProvider } from "./context/tracking-context"
 
 const anton = Anton({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-anton" })
 const montserrat = Montserrat({
@@ -25,7 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${anton.variable} ${montserrat.variable} ${chango.variable}`}>
-      <body>{children}</body>
+      <body>
+        <TrackingProvider>
+          {children}
+        </TrackingProvider>
+      </body>
     </html>
   )
 }

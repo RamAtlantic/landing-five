@@ -2,16 +2,17 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import { useUserTracking } from "../app/context/tracking-context"
+import { sendMetaEvent } from "@/services/metaEventService"
+import { Loader } from './ui/loader'
+
 
 export function ContentSection() {
   const [isCasinoHovered, setIsCasinoHovered] = useState(false)
   const [showVideo, setShowVideo] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  const handleMakerClick = () => {
-    window.open("https://mooneymaker.co/?ref=48215", "_blank")
-  }
+  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({})
 
   const handleCasinoMouseEnter = () => {
     setIsCasinoHovered(true)
@@ -44,6 +45,50 @@ export function ContentSection() {
     }
   }
 
+  const { sendTrackingData } = useUserTracking();
+
+  const handleRegistration = async () => {
+    setLoadingStates((prevStates) => ({ ...prevStates, button1: true }));
+    try {
+      const tempEmail = `user_${Date.now()}@example.com`;
+      const success = await sendMetaEvent(tempEmail, "10");
+
+      if (success) {
+        console.log('Evento de registro enviado exitosamente a Meta');
+      } else {
+        console.warn('No se pudo enviar el evento a Meta');
+      }
+
+      try {
+        await sendTrackingData();
+        console.log('Datos de tracking enviados exitosamente');
+      } catch (error) {
+        console.warn('Error enviando datos de tracking:', error);
+      }
+
+      const registerUrl = process.env.NEXT_PUBLIC_REGISTER_URL;
+      if (registerUrl) {
+        window.location.href = registerUrl;
+      }
+    } catch (error) {
+      console.error('Error en el proceso de registro:', error);
+      const registerUrl = process.env.NEXT_PUBLIC_REGISTER_URL;
+      if (registerUrl) {
+        window.location.href = registerUrl;
+      }
+    } finally {
+      setLoadingStates((prevStates) => ({ ...prevStates, button1: false }));
+    }
+  };
+
+  const handleButtonClick = (buttonId: string) => {
+    setLoadingStates((prevStates) => ({ ...prevStates, [buttonId]: true }));
+    // Simular una acción asíncrona
+    setTimeout(() => {
+      setLoadingStates((prevStates) => ({ ...prevStates, [buttonId]: false }));
+    }, 2000);
+  };
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -55,27 +100,30 @@ export function ContentSection() {
   return (
     <div className="bg-black py-12">
       <section className="container mx-auto px-3 lg:px-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 gap-8 mb-12 lg:grid-cols-2">
           {/* Casino Card */}
           <div
-            className="bg-black rounded-lg p-6 border border-gray-700 cursor-pointer hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out"
+            className="bg-black rounded-lg p-4 border border-gray-700 cursor-pointer hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out"
             onMouseEnter={handleCasinoMouseEnter}
             onMouseLeave={handleCasinoMouseLeave}
+            onClick={handleRegistration}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+            <div className="grid grid-cols-1 gap-4 items-center lg:grid-cols-2">
               <div className="text-left">
-                <h3 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-3 font-chango">
+                <h3 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-2 lg:mb-3 font-chango">
                   Casino
                 </h3>
-                <p className="text-base text-white mb-4">
+                <p className="text-sm lg:text-base text-white mb-2 lg:mb-4">
                   Disfute de nuestra exclusiva selección de tragamoneda, y juegos originales GANÁ Y RETIRA EN EL ACTO.
                 </p>
-                <button
-                  onClick={handleMakerClick}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-r-full rounded-l-none border-2 border-green-400 transition-colors duration-200 font-chango"
-                >
-                  IR A CASINO
-                </button>
+                {loadingStates['button1'] ? <Loader /> : (
+                  <button
+                    onClick={() => handleButtonClick('button1')}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 lg:py-3 px-4 lg:px-6 rounded-r-full rounded-l-none border-2 border-green-400 transition-colors duration-200 font-chango"
+                  >
+                    IR A CASINO
+                  </button>
+                )}
               </div>
               <div className="flex justify-center relative">
                 <img
@@ -96,21 +144,23 @@ export function ContentSection() {
           </div>
 
           {/* Deportes Card */}
-          <div className="bg-black rounded-lg p-6 border border-gray-700 group hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+          <div className="bg-black rounded-lg p-4 border border-gray-700 group hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out">
+            <div className="grid grid-cols-1 gap-4 items-center lg:grid-cols-2">
               <div className="text-left">
-                <h3 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-3 font-chango">
+                <h3 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-2 lg:mb-3 font-chango">
                   Deportes
                 </h3>
-                <p className="text-base text-white mb-4">
+                <p className="text-sm lg:text-base text-white mb-2 lg:mb-4">
                   Nuestra casa de apuestas intuitiva esta hecha tanto para jugadores nuevos como experimentados.
                 </p>
-                <button
-                  onClick={handleMakerClick}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-r-full rounded-l-none border-2 border-green-400 transition-colors duration-200 font-chango"
-                >
-                  IR A DEPORTES
-                </button>
+                {loadingStates['button2'] ? <Loader /> : (
+                  <button
+                    onClick={() => handleButtonClick('button2')}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 lg:py-3 px-4 lg:px-6 rounded-r-full rounded-l-none border-2 border-green-400 transition-colors duration-200 font-chango"
+                  >
+                    IR A DEPORTES
+                  </button>
+                )}
               </div>
               <div className="flex justify-center relative">
                 <img
@@ -128,24 +178,26 @@ export function ContentSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 gap-8 mb-12 lg:grid-cols-2">
           {/* Ruleta en Vivo Card */}
-          <div className="bg-black rounded-lg p-6 border border-gray-700 hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+          <div className="bg-black rounded-lg p-4 border border-gray-700 hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out">
+            <div className="grid grid-cols-1 gap-4 items-center lg:grid-cols-2">
               <div className="text-left">
-                <h3 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-3 font-chango">
+                <h3 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-2 lg:mb-3 font-chango">
                   Ruleta en Vivo
                 </h3>
-                <p className="text-base text-white mb-4">
+                <p className="text-sm lg:text-base text-white mb-2 lg:mb-4">
                   Junto a expertos en el acierto te esperan las mejores ruletas en vivo para que puedas disfrutarlo al
                   maximo.
                 </p>
-                <button
-                  onClick={handleMakerClick}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-r-full rounded-l-none border-2 border-green-400 transition-colors duration-200 font-chango"
-                >
-                  JUGAR EN VIVO
-                </button>
+                {loadingStates['button3'] ? <Loader /> : (
+                  <button
+                    onClick={() => handleButtonClick('button3')}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 lg:py-3 px-4 lg:px-6 rounded-r-full rounded-l-none border-2 border-green-400 transition-colors duration-200 font-chango"
+                  >
+                    JUGAR EN VIVO
+                  </button>
+                )}
               </div>
               <div className="flex justify-center">
                 <img src="https://nic5.mooneymaker.io/img/ruleta.webp" className="w-full max-w-xs" alt="Ruleta" />
@@ -155,8 +207,8 @@ export function ContentSection() {
 
           {/* Enhanced Create User Card with Crystal Glass Effect */}
           <motion.div
-            className="hidden md:flex bg-black rounded-lg p-6 border border-gray-700 items-center justify-center flex-col relative overflow-hidden cursor-pointer group hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out"
-            onClick={handleMakerClick}
+            className="hidden md:flex bg-black rounded-lg p-4 border border-gray-700 items-center justify-center flex-col relative overflow-hidden cursor-pointer group hover:border-yellow-500 hover:shadow-lg transition-all duration-500 ease-in-out"
+            onClick={handleRegistration}
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
@@ -179,32 +231,52 @@ export function ContentSection() {
 
             {/* Content */}
             <div className="relative z-10">
-              <motion.h3
-                className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-4 font-chango text-center"
-                whileHover={{
-                  textShadow: "0 0 20px rgba(34, 197, 94, 0.5)",
-                  scale: 1.05,
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                CREA TU USUARIO
-              </motion.h3>
-
-              <motion.p
-                className="text-2xl text-white leading-tight text-center group-hover:text-green-100 transition-colors duration-300"
-                whileHover={{ scale: 1.02 }}
-              >
-                Y RECIBA RECOMPESAS DE DEPÓSITO DE HASTA{" "}
-                <motion.span
-                  className="font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent"
+              {loadingStates['button1'] ? <Loader /> : (
+                <motion.h3
+                  className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-3 lg:mb-4 font-chango text-center"
                   whileHover={{
-                    textShadow: "0 0 15px rgba(250, 204, 21, 0.5)",
-                    scale: 1.1,
+                    textShadow: "0 0 20px rgba(34, 197, 94, 0.5)",
+                    scale: 1.05,
                   }}
+                  transition={{ duration: 0.3 }}
                 >
-                  $10.000.000
-                </motion.span>
-              </motion.p>
+                  CREA TU USUARIO
+                </motion.h3>
+              )}
+
+              {loadingStates['button1'] ? (
+                <motion.p
+                  className="text-xl lg:text-2xl text-white leading-tight text-center group-hover:text-green-100 transition-colors duration-300"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  Y RECIBA RECOMPESAS DE DEPÓSITO DE HASTA{" "}
+                  <motion.span
+                    className="font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent"
+                    whileHover={{
+                      textShadow: "0 0 15px rgba(250, 204, 21, 0.5)",
+                      scale: 1.1,
+                    }}
+                  >
+                    $10.000.000
+                  </motion.span>
+                </motion.p>
+              ) : (
+                <motion.p
+                  className="text-xl lg:text-2xl text-white leading-tight text-center group-hover:text-green-100 transition-colors duration-300"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  Y RECIBA RECOMPESAS DE DEPÓSITO DE HASTA{" "}
+                  <motion.span
+                    className="font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent"
+                    whileHover={{
+                      textShadow: "0 0 15px rgba(250, 204, 21, 0.5)",
+                      scale: 1.1,
+                    }}
+                  >
+                    $10.000.000
+                  </motion.span>
+                </motion.p>
+              )}
             </div>
 
             {/* Floating Particles Effect */}
