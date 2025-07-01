@@ -81,12 +81,13 @@ export function ContentSection() {
     }
   };
 
-  const handleButtonClick = (buttonId: string) => {
+  const handleButtonClick = async (buttonId: string) => {
     setLoadingStates((prevStates) => ({ ...prevStates, [buttonId]: true }));
-    // Simular una acción asíncrona
-    setTimeout(() => {
+    try {
+      await handleRegistration();
+    } finally {
       setLoadingStates((prevStates) => ({ ...prevStates, [buttonId]: false }));
-    }, 2000);
+    }
   };
 
   useEffect(() => {
