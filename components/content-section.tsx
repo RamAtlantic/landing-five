@@ -131,15 +131,7 @@ export function ContentSectionUpdated() {
           {/* Ruleta Card with Hover Video */}
           <RuletaHoverVideo onButtonClick={() => handleButtonClick("button3")} isLoading={loadingStates["button3"]}>
             <div className="text-left" onMouseEnter={handleRuletaMouseEnter}>
-              {isRuletaVideoVisible ? (
-                <video src="/video2.mp4" autoPlay muted className="w-full h-full object-cover" />
-              ) : (
-                <img
-                  src="/path/to/ruleta-image.jpg"
-                  className="w-full h-full object-cover"
-                  alt="Ruleta en Vivo"
-                />
-              )}
+             
               <h3 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-2 lg:mb-3 font-chango">
                 Ruleta en Vivo
               </h3>
