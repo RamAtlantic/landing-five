@@ -1,21 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
-import { Anton, Montserrat, Chango } from "next/font/google"
+import { Montserrat, Chango, Anton, Antic_Didone, Archivo_Black, Rowdies, Alfa_Slab_One, Luckiest_Guy } from "next/font/google"
 import { TrackingProvider } from "./context/tracking-context"
 import Script from "next/script"
 import { ThemeProvider } from "@/components/theme-provider"
 
 
 
-const anton = Anton({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-anton" })
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-montserrat",
-})
-const chango = Chango({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-chango" })
+const anton = Montserrat({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-anton" })
+const montserrat =Anton({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-montserrat" })
+
+const chango = Luckiest_Guy({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-chango" })
 
 
 
