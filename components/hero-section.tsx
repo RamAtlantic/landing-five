@@ -50,7 +50,7 @@ export function HeroSection() {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 gap-8 items-center lg:grid-cols-2">
           <div className="text-center lg:text-left z-10">
-            <div className="mb-6 lg:mb-8">
+            <div className="lg:mb-8">
               <h1 className="text-4xl lg:text-7xl font-bold text-white mb-2 font-chango">BIENVENIDO</h1>
               <h2 className="text-5xl lg:text-8xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-3 lg:mb-4 font-chango tracking-wider">
                 MOONEY MAKER
@@ -117,11 +117,11 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="flex justify-center lg:justify-end items-end h-full relative">
+          <div className="flex justify-center lg:justify-end items-end h-full relative top-24">
             <div className="image-gradient-bear flex items-end">
               <img
                 src="/gift2.gif"
-                className="w-64 h-64 lg:w-[400px] lg:h-[400px] object-contain object-bottom opacity-50 lg:opacity-100"
+                className="w-84 h-84 lg:w-[400px] lg:h-[400px] object-contain object-bottom opacity-50 lg:opacity-100"
                 alt="Mooney Maker Bear"
                 style={{ position: "relative", bottom: "-130px" }}
               />
