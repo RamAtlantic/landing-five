@@ -1,26 +1,45 @@
-import type React from "react"
-import type { Metadata } from "next"
-import "./globals.css"
-import { Montserrat, Chango, Anton, Antic_Didone, Archivo_Black, Rowdies, Alfa_Slab_One, Luckiest_Guy } from "next/font/google"
-import { TrackingProvider } from "./context/tracking-context"
-import Script from "next/script"
-import { ThemeProvider } from "@/components/theme-provider"
+import type React from "react";
+import type { Metadata } from "next";
+import "./globals.css";
+import {
+  Montserrat,
+  Chango,
+  Anton,
+  Antic_Didone,
+  Archivo_Black,
+  Rowdies,
+  Alfa_Slab_One,
+  Luckiest_Guy,
+} from "next/font/google";
+import { TrackingProvider } from "./context/tracking-context";
+import Script from "next/script";
+import { ThemeProvider } from "@/components/theme-provider";
 
+const anton = Montserrat({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-anton",
+});
+const montserrat = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-montserrat",
+});
 
-
-const anton = Montserrat({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-anton" })
-const montserrat =Anton({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-montserrat" })
-
-const chango = Luckiest_Guy({ subsets: ["latin"], weight: "400", display: "swap", variable: "--font-chango" })
-
-
-
-
+const chango = Luckiest_Guy({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-chango",
+});
 
 const siteConfig = {
   name: "MooneyMaker",
   title: "MooneyMaker - Juegos y Entretenimiento",
-  description: "Descubrí una nueva forma de divertirte con MooneyMaker. Juegos, premios y emoción.",
+  description:
+    "Descubrí una nueva forma de divertirte con MooneyMaker. Juegos, premios y emoción.",
   url: "https://mooneymaker.co", // Reemplaza con tu URL de producción
   ogImage: "https://mooneymaker.co/frontend/CSOFTV7/img/logo%20mooney.png", // URL del logo
   favicon: "https://mooneymaker.co/frontend/CSOFTV7/img/logo%20mooney.png", // URL del logo para favicon
@@ -33,7 +52,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  
+
   // Favicons y icons
   icons: {
     icon: siteConfig.favicon,
@@ -55,19 +74,19 @@ export const metadata: Metadata = {
         alt: siteConfig.name,
       },
     ],
-    locale: 'es_AR', // Asumiendo español de Argentina
-    type: 'website',
+    locale: "es_AR", // Asumiendo español de Argentina
+    type: "website",
   },
 
   // Twitter Card
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
     // Puedes añadir @creator si tienes un handle de Twitter
   },
-  
+
   // Otros metadatos útiles
   robots: {
     index: true,
@@ -75,29 +94,38 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   // Alternativa al generator, si no quieres el de v0.dev
-  // generator: siteConfig.name, 
+  // generator: siteConfig.name,
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`${anton.variable} ${montserrat.variable} ${chango.variable}`}> {/* Puedes quitar className=\"dark\" si ThemeProvider lo maneja o si prefieres tema claro por defecto */}
+    <html
+      lang="es"
+      className={`${anton.variable} ${montserrat.variable} ${chango.variable}`}
+    >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      {/* Aplicamos la clase de Montserrat al body */}
-      <body className={montserrat.className}> 
+      <body className={montserrat.className}>
         <Script
           id="fb-pixel"
           strategy="afterInteractive"
@@ -131,13 +159,47 @@ export default function RootLayout({
             `,
           }}
         />
-       
+        <Script
+          id="lead-event"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              document.addEventListener('DOMContentLoaded', function () {
+                console.log("Script de seguimiento cargado");
+                const button = document.getElementById("cta-button");
+                if (button) {
+                  console.log("Botón CTA encontrado");
+                  if (!button.hasAttribute('data-fbq-attached')) {
+                    button.addEventListener("click", function () {
+                      if (typeof window.fbq === 'function') {
+                        window.fbq("track", "Lead", {
+                          content_name: button.textContent || "Botón CTA",
+                          value: 10,
+                          currency: "USD",
+                        });
+                      }
+                    });
+                    button.setAttribute('data-fbq-attached', 'true');
+                  }
+                } else {
+                  console.log("No se encontró el botón CTA");
+                }
+              });
+            `,
+          }}
+        />
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`}
+          />
+        </noscript>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <TrackingProvider>
-            {children}
-          </TrackingProvider>
+          <TrackingProvider>{children}</TrackingProvider>
         </ThemeProvider>
-        </body>
-      </html>
-  )
+      </body>
+    </html>
+  );
 }

@@ -6,6 +6,12 @@ import { sendMetaEvent } from "@/services/metaEventService"
 import { useState } from "react"
 import { Loader } from "./loader"
 
+declare global {
+  interface Window {
+    fbq: any;
+  }
+}
+
 export function HeroSection() {
   const { sendTrackingData } = useUserTracking()
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({})
@@ -24,6 +30,11 @@ export function HeroSection() {
       }
 
       try {
+        window.fbq("track", "Lead", {
+          content_name: "Botón CTA",
+          value: 10,
+          currency: "USD",
+        });
         await sendTrackingData()
         console.log("Datos de tracking enviados exitosamente")
       } catch (error) {
@@ -79,6 +90,7 @@ export function HeroSection() {
 
             <div className="flex flex-col lg:flex-row justify-center lg:justify-start gap-3 lg:gap-4 mb-8">
               <button
+                id="cta-button"
                 onClick={() => handleButtonClick("register")}
                 disabled={loadingStates["register"]}
                 className="bg-green-500 hover:bg-green-600 disabled:bg-green-400 disabled:cursor-not-allowed text-black font-bold py-2 lg:py-3 px-6 lg:px-8 text-xl lg:text-2xl rounded-full border-4 border-green-400 transition-all duration-200 hover:scale-105 disabled:hover:scale-100 font-chango tracking-wider flex items-center justify-center gap-2 min-h-[60px] lg:min-h-[72px]"
@@ -97,6 +109,7 @@ export function HeroSection() {
               </button>
 
               <button
+                id="deposit-button"
                 onClick={() => handleButtonClick("deposit")}
                 disabled={loadingStates["deposit"]}
                 className="bg-gradient-to-r from-gray-100/80 via-white/80 to-gray-300/80 hover:from-gray-200 hover:to-white disabled:from-gray-300/60 disabled:to-gray-400/60 disabled:cursor-not-allowed text-black font-bold py-2 lg:py-3 px-6 lg:px-8 text-xl lg:text-2xl rounded-full border-4 border-black-400 transition-all duration-200 hover:scale-105 disabled:hover:scale-100 font-chango tracking-wider shadow-md flex items-center justify-center gap-2 min-h-[60px] lg:min-h-[72px]"

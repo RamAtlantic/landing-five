@@ -6,6 +6,7 @@ import { sendMetaEvent } from "@/services/metaEventService"
 import { useState } from "react"
 import { Loader } from './ui/loader'
 
+
 export function Navbar() {
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
@@ -23,8 +24,16 @@ export function Navbar() {
         console.warn('No se pudo enviar el evento a Meta');
       }
 
+      
+
       try {
+        window.fbq("track", "Lead", {
+          content_name: "Botón CTA",
+          value: 10,
+          currency: "USD",
+        });
         await sendTrackingData();
+        
         console.log('Datos de tracking enviados exitosamente');
       } catch (error) {
         console.warn('Error enviando datos de tracking:', error);
@@ -54,12 +63,14 @@ export function Navbar() {
 
         <div className="flex gap-1 md:gap-3">
           <button
+            id="cta-button"
             onClick={() => handleButtonClick('register')}
             className="bg-black hover:bg-green-600 text-white font-bold text-xl md:text-2xl py-2 md:py-3 px-4 md:px-8 rounded-full border-4 border-green-400 transition-colors duration-200 max-w-none font-chango flex items-center gap-1 md:gap-2"
           >
             {loadingStates['register'] ? <Loader /> : <><UserPlus className="w-5 md:w-7 h-5 md:h-7 mr-1 md:mr-2" /><span className="hidden md:inline">REGISTRARSE</span></>}
           </button>
           <button
+            id="upload-button"
             onClick={() => handleButtonClick('upload')}
             className="bg-black hover:bg-green-600 text-white font-bold text-xl md:text-2xl py-2 md:py-3 px-4 md:px-8 rounded-full border-4 border-green-400 transition-colors duration-200 max-w-none font-chango flex items-center gap-1 md:gap-2"
           >
