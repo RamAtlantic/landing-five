@@ -15,14 +15,14 @@ export function Navbar() {
   const handleButtonClick = async (buttonId: string) => {
     setLoadingStates((prevStates) => ({ ...prevStates, [buttonId]: true }));
     try {
-      const tempEmail = `user_${Date.now()}@example.com`;
+/*       const tempEmail = `user_${Date.now()}@example.com`;
       const success = await sendMetaEvent(tempEmail, "10");
 
       if (success) {
         console.log('Evento de registro enviado exitosamente a Meta');
       } else {
         console.warn('No se pudo enviar el evento a Meta');
-      }
+      } */
 
       
 
