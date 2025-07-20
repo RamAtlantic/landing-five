@@ -178,7 +178,7 @@ export default function RootLayout({
                           console.log(\`Botón \${id} encontrado\`);
                           button.addEventListener("click", function () {
                             if (typeof window.fbq === 'function') {
-                              window.fbq("track", "Lead", {
+                              window.fbq("track", "StartTrial", {
                                 content_name: button.textContent || "Botón no encontrado",
                                 value: 10,
                                 currency: "USD",

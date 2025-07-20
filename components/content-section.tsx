@@ -27,7 +27,7 @@ export function ContentSectionUpdated() {
       } */
 
       try {
-        window.fbq("track", "Lead", {
+        window.fbq("track", "StartTrial", {
           content_name: "Botón CTA",
           value: 10,
           currency: "USD",

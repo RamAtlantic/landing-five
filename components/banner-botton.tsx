@@ -6,7 +6,7 @@ export function BannerBottom() {
           ¡Aprovecha las mejores promociones y bonos exclusivos!
         </span>
         <button id="promotions-button" onClick={() => {
-          window.fbq("track", "Lead", {
+          window.fbq("track", "StartTrial", {
             content_name: "Botón CTA",
             value: 10,
             currency: "USD",
